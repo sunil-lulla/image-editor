@@ -4,6 +4,8 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ToolsComponent } from './tools/tools.component';
+import { HttpService } from "./http.service";
+import { HttpClientModule } from "@angular/common/http"; // replaces previous Http service
 
 @NgModule({
   declarations: [
@@ -12,9 +14,12 @@ import { ToolsComponent } from './tools/tools.component';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    HttpClientModule
   ],
-  providers: [],
+  providers: [
+    HttpService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

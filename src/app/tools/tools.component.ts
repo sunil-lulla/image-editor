@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { HttpService } from '../http.service';
 
 @Component({
   selector: 'app-tools',
@@ -10,23 +11,27 @@ export class ToolsComponent implements OnInit {
   canvas: ElementRef<HTMLCanvasElement>;
   private ctx: CanvasRenderingContext2D;
   private canvas_obj: any;
-  constructor() {}
-
+  imageTemplates: any = [];
+  private texts: any = [];
+  constructor(private _httpService: HttpService) {}
   ngOnInit(): void {
     this.canvas_obj = this.canvas.nativeElement as HTMLCanvasElement;
     this.ctx = this.canvas_obj.getContext('2d');
-    this.resizeCanvas(500, 500);
+    this.resizeCanvas(500);
   }
 
-  resizeCanvas(height, width): void {
+  ngAfterViewInit() {
+    this._httpService.getImages({}).subscribe((res: any) => {
+      this.imageTemplates = res;
+    });
+  }
+
+  resizeCanvas(height): void {
     this.canvas_obj.height = height;
     this.canvas_obj.width = this.canvas_obj.height * (16 / 9);
   }
 
-  imageToCanvas(img_src, x, y, height, width): void {
-    let img = new Image();
-    img.crossOrigin = "Anonymous";
-    img.src = img_src;
+  imageToCanvas(img, x, y, height, width): void {
     this.ctx.drawImage(img, x, y, width, height);
   }
 
@@ -34,10 +39,9 @@ export class ToolsComponent implements OnInit {
     event.preventDefault();
     var data = event.dataTransfer.getData('text');
     let img = document.getElementById(data) as HTMLImageElement;
-    let img_src = img.getAttribute('src');
     let pos = this.getMousePos(event);
     this.imageToCanvas(
-      img_src,
+      img,
       pos.x - img.width / 2,
       pos.y - img.height / 2,
       img.height,
@@ -48,6 +52,8 @@ export class ToolsComponent implements OnInit {
   onDragOver(event) {
     event.preventDefault();
   }
+
+  canvasMouseMove(e) {}
 
   onDragStart(event) {
     event.dataTransfer.effectAllowed = 'copyMove';
@@ -62,7 +68,7 @@ export class ToolsComponent implements OnInit {
 
   downloadCanvas() {
     var link = document.createElement('a');
-    link.download = 'filename.png';
+    link.download = 'canvas_image.png';
     link.href = this.canvas_obj.toDataURL();
     link.click();
   }
@@ -73,5 +79,27 @@ export class ToolsComponent implements OnInit {
       x: evt.clientX - rect.left,
       y: evt.clientY - rect.top,
     };
+  }
+  addText(): any {
+    // this.ctx.clearRect(0, 0, this.canvas_obj.width, this.canvas_obj.height);
+
+    let inputbox_val = (document.getElementById(
+      'canvas_input'
+    ) as HTMLInputElement).value;
+
+    this.ctx.font = '16px verdana';
+
+    let y = this.texts.length * 20 + 20;
+    let text = {
+      text: inputbox_val,
+      x: 20,
+      y: y,
+    };
+
+    this.texts.push(text);
+    for (let i = 0; i < this.texts.length; i++) {
+      let text = this.texts[i];
+      this.ctx.fillText(text.text, text.x, text.y);
+    }
   }
 }

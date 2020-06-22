@@ -3,22 +3,27 @@
   <span class="navbar-brand mb-0 h1">Image Editor</span>
 </nav>
 <div>
-    &nbsp;
+  &nbsp;
 </div>
 
 <div class="container">
   <div class="row">
-    <div class="col-md-3" style="border: 1px solid red;">
+    <div class="col-md-3" style="background-color:#eeeeee;">
       <div>
         Tools
+        <div>
+          <input id="canvas_input" type="text"> 
+          <button id="submit" (click)="addText();">Add text</button><br>
         </div>
-      <div>
+      </div>
+      <div style="max-height: 500px !important;   overflow-y:auto;">
         Images
-        <img id="img-1" (dragstart)="onDragStart($event)" draggable="true" height="200" width="200"
-          src="https://picsum.photos/id/1025/4951/3301" />
-        <img id="img-2" (dragstart)="onDragStart($event)" draggable="true" height="200" width="200"
-          src="https://picsum.photos/id/1024/1920/1280" /> <br />
+        <div *ngFor="let img_obj of imageTemplates; let myIndex = index">
+          <img loading="lazy" style="float: left;padding: 5px;" crossorigin="anonymous" id="img-{{img_obj.id}}" (dragstart)="onDragStart($event)" draggable="true"
+            height="120" width="120" src="{{img_obj.download_url}}" />
         </div>
+        <br />
+      </div>
     </div>
 
     <div class="main-body col-md-9">

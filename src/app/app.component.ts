@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { ToolsComponent } from './tools/tools.component'
+import { HttpService } from "./http.service";
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
