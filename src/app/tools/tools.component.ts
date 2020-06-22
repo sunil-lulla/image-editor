@@ -40,13 +40,19 @@ export class ToolsComponent implements OnInit {
     var data = event.dataTransfer.getData('text');
     let img = document.getElementById(data) as HTMLImageElement;
     let pos = this.getMousePos(event);
+    let imagex = pos.x - img.width / 2
+    let imagey = pos.y - img.height / 2
     this.imageToCanvas(
       img,
-      pos.x - img.width / 2,
-      pos.y - img.height / 2,
+      imagex,
+      imagey,
       img.height,
       img.width
     );
+    this.drawDragAnchor(imagex, imagey)
+    this.drawDragAnchor(imagex+img.width,imagey)
+    this.drawDragAnchor(imagex+img.width,imagey+img.height)
+    this.drawDragAnchor(imagex,imagey+img.height)
   }
 
   onDragOver(event) {
@@ -102,4 +108,14 @@ export class ToolsComponent implements OnInit {
       this.ctx.fillText(text.text, text.x, text.y);
     }
   }
+
+  handleCanvasMouseMove(evt): any{  }
+
+  drawDragAnchor(x, y): any {
+    this.ctx.beginPath();
+    this.ctx.arc(x,y,9,0,Math.PI*2,false);
+    this.ctx.closePath();
+    this.ctx.fill();
+  }
+
 }
